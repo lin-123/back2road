@@ -6,8 +6,10 @@
   "dependencies": {
     "co-wechat": "^2.3.0",
     "egg": "^2.0.0",
+    "egg-mysql": "^3.0.0",
     "egg-scripts": "^2.1.0",
-    "egg-view-nunjucks": "^2.1.4"
+    "egg-view-nunjucks": "^2.1.4",
+    "object-assign": "^4.1.1"
   },
   "devDependencies": {
     "autod": "^3.0.1",

@@ -1,6 +1,8 @@
 # guiliao-server
 
-
+## todo 
+1. 新人报道：[班级] [姓名] 正则表达式匹配
+2. 新增班级枚举
 
 ## QuickStart
 
