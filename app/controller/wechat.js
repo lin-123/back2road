@@ -1,6 +1,6 @@
 'use strict';
 const wechat = require('co-wechat')
-
+const wechatEvent = require('../service/wechat-event')
 // 因为 Egg 需要用类的形式来组织，而 wechat 是通过 middleware 方法来生成中间件
 module.exports = app => {
   class HomeController extends app.Controller {}
@@ -18,31 +18,14 @@ module.exports = app => {
 
     const {Content, MsgType, FromUserName: openid} = message;
     if(MsgType == 'text'){
-      // console.log(message, message.Content.trim(), Content.trim().match(/#(\S+)#/))
-      const [, event] = Content.trim().match(/#(\S+)#/) || []
-
-      const str = Content.slice(`#${event}#`)
-      if(event == '新人报道') {
-        const [classes, name] = str.match(/(\S+)/g)
-        const result = await ctx.service.user.add({openid, name, classes})
-        if(result) return reply('注册成功啦！');
-        console.log(openid, name, classes)
-        reply('注册失败')
+      try{
+        const msg = await wechatEvent.map(message, ctx)
+        return reply(msg)
+      }catch(e) {
+        if(e.errmsg) return e.errmsg;
+        throw e
       }
 
-      if(event == '打卡') {
-        const user = await ctx.service.user.get({openid})
-        if(!user) return reply(`
-          还未注册，请回复学员信息:
-          [格式]：
-            #新人报道# [班级] [姓名]
-          [如]：
-            #新人报道# 归了班 卡卡
-        `);
-        console.log('asdf', user)
-        if(['1', '拜忏'].indexOf(Content) > -1) return reply('拜忏， 嘿！');
-        if(['2', '梁山'].indexOf(Content) > -1) return reply('梁山， 哈！');
-      }
     }
 
     return {

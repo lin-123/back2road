@@ -2,11 +2,11 @@
 
 const Controller = require('egg').Controller;
 
-class UserController extends Controller {
-  async register() {
-    const {page} = this.ctx.query
-    await this.ctx.render('news/list.tpl', await this.ctx.service.news.list(page || 1));
+class User extends Controller {
+  async list() {
+    const {pageSize, pageNo} = this.ctx.query
+    this.ctx.body = await this.ctx.service.user.list({pageSize, pageNo})
   }
 }
 
-module.exports = UserController;
+module.exports = User;
