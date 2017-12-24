@@ -33,7 +33,7 @@ class Events {
       return `${type}. ${link} ${days}天`
     }))
     const msgs = records.concat([,
-      `打卡请回复: #打卡# 序号`,
+      `打卡请回复: #打卡# 序号/名称`,
       `如打卡“梁山”回复： `,
       `    #打卡# 0`,
       `或： `,
