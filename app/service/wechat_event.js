@@ -1,3 +1,5 @@
+const qs = require('querystring')
+
 class Events {
   async map({Content, FromUserName}, ctx) {
     const [, event] = Content.trim().match(/#(\S+)#/) || []
@@ -23,10 +25,12 @@ class Events {
 
   async autoReply(str, openid, ctx) {
     const user = await this.getUser(openid, ctx)
-    const {punchTypeEnum} = ctx.app.config.resource
-    const records = await Promise.all(punchTypeEnum.map( async (typeName, typeIdx) => {
-      const days = await ctx.service.record.count({userid: user.id, type: typeIdx})
-      return `${typeIdx}. ${typeName} ${days}天`
+    const {punchTypeEnum, recordUrl} = ctx.app.config.resource
+    const records = await Promise.all(punchTypeEnum.map( async (typeName, type) => {
+      const days = await ctx.service.record.count({userid: user.id, type})
+      const href = recordUrl + qs.stringify({type, openid})
+      const link = `<a href='${href}'>${typeName}</a>`
+      return `${type}. ${link} ${days}天`
     }))
     const msgs = records.concat([,
       `打卡请回复: #打卡# 序号`,

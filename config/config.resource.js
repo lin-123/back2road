@@ -8,6 +8,7 @@ module.exports = {
     `,
   // 顺序不能变
   punchTypeEnum: ['梁山', '拜忏'],
-  classesEnum: ['归了班']
+  classesEnum: ['归了班'],
+  recordUrl: 'http://www.linkaka.cn/back2road/?'
 
 }

@@ -21,13 +21,20 @@ const config = {
         return true;
         // isInnerIp(ctx.ip)
       },
-    }
+    },
+    domainWhiteList: ['http://localhost:3000'],
   },
   cluster: {
     listen: {
       port: 3000,
       hostname: '127.0.0.1',
     }
+  },
+  cors: {
+    // {string|Function}
+    origin: '*',
+    // {string|Array}
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
   }
 }
 
