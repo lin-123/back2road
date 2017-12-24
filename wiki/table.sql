@@ -20,3 +20,11 @@ CREATE TABLE `record` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_punch_date` (`userid`,`type`,`date`)
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+-- cache table
+DROP TABL `cache`;
+CREATE TABLE `cache` (
+  `key` varchar(256) NOT NULL COMMENT 'query key',
+  `value` varchar(512) NULL COMMENT 'query value'
+  PRIMARY KEY (`key`),
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

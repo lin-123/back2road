@@ -12,4 +12,6 @@ module.exports = app => {
 
   app.all('/wechat', controller.wechat.wechat)
   router.get('/wechat/menu', controller.wechat.getMenu)
+
+  router.get('/record/all', controller.record.groupbyList)
 };

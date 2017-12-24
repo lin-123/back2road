@@ -1,4 +1,3 @@
-// app/service/news.js
 const Service = require('egg').Service;
 
 class Record extends Service {
@@ -14,11 +13,6 @@ class Record extends Service {
     })
   }
 
-  async delete({id}) {
-    const result = await this.app.mysql.delete('record', {id})
-    return result.affectedRows
-  }
-
   async count({userid, type}) {
     return await this.app.mysql.count('record', {
       type,
@@ -26,16 +20,17 @@ class Record extends Service {
     })
   }
 
-  async get({openid, date, type}){
-    const results = await app.mysql.select('record',{
-      where: { openid },
-      orders: [['created_at','desc'], ['id','desc']],
-      limit: 10,
-      offset: 0
-    });
+  async groupby({type}) {
+    const countSql = `
+      SELECT count(*) as count, userid
+      FROM record
+      where type=?
+      group by userid
+    `
+    return await this.app.mysql.query(countSql, type);
   }
 
-  async list({openid, pageNo=0, pageSize=20}) {
+  async list({openid, type, pageNo=0, pageSize=20}) {
     return await this.app.mysql.select('record',{
       where: {
         // userid: id
@@ -45,6 +40,11 @@ class Record extends Service {
       offset: pageNo
     });
   }
+
+  // async delete({id}) {
+  //   const result = await this.app.mysql.delete('record', {id})
+  //   return result.affectedRows
+  // }
 }
 
 module.exports = Record;

@@ -14,17 +14,23 @@ class UserService extends Service {
     return affectedRows == 1
   }
 
-  async delete({openid}) {
-    const result = await this.app.mysql.delete('user', {openid})
-    return result.affectedRows
-  }
-
   async get({openid}){
     return await this.app.mysql.get('user', {openid})
   }
 
+  async listByIds({ids}) {
+    return await this.app.mysql.select('user', {
+      where: {id: ids}
+    })
+  }
+
   async list({pageNo=0, pageSize=20}) {
-    return await this.app.mysql.get('user')
+    return await this.app.mysql.select('user')
+  }
+
+  async delete({openid}) {
+    const result = await this.app.mysql.delete('user', {openid})
+    return result.affectedRows
   }
 }
 

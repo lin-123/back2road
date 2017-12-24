@@ -7,6 +7,7 @@ module.exports = {
     return wechat(this.config.wechat).middleware(fn)
   },
 
+  // 向app上增加一个属性
   get wechatapi() {
     if(!this[WechatAPI]){
       const {appid, secret} = this.config.wechat
