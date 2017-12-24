@@ -2,19 +2,28 @@ class Events {
   async map({Content, FromUserName}, ctx) {
     const [, event] = Content.trim().match(/#(\S+)#/) || []
     const str = Content.split(`#${event}#`)[1]
-
     const method = {
       '注册': 'register',
       '打卡': 'punch'
     }[event]
-    if(!method) return this.autoReply(FromUserName, ctx);
 
-    return await this[method](str, FromUserName, ctx)
+    try {
+      return await this[method || 'autoReply'](str, FromUserName, ctx)
+    } catch(e) {
+      if(e !== 'toRegister') throw e;
+      return ctx.app.config.resource.registerMsg
+    }
   }
 
-  async autoReply(openid, ctx) {
-    const {punchTypeEnum} = ctx.app.config.resource
+  async getUser(openid, ctx) {
     const user = await ctx.service.user.get({openid})
+    if(!user) throw 'toRegister';
+    return user
+  }
+
+  async autoReply(str, openid, ctx) {
+    const user = await this.getUser(openid, ctx)
+    const {punchTypeEnum} = ctx.app.config.resource
     const records = await Promise.all(punchTypeEnum.map( async (typeName, typeIdx) => {
       const days = await ctx.service.record.count({userid: user.id, type: typeIdx})
       return `${typeIdx}. ${typeName} ${days}天`
@@ -40,17 +49,15 @@ class Events {
   }
 
   async punch(str, openid, ctx) {
-    const user = await ctx.service.user.get({openid})
-    const {registerMsg, punchTypeEnum} = ctx.app.config.resource
-    if(!user) return registerMsg;
-
+    const user = await this.getUser(openid, ctx)
+    const {punchTypeEnum} = ctx.app.config.resource
     const [type] = str.match(/(\S+)/g)
     const punchType = punchTypeEnum[type] ? type : punchTypeEnum.indexOf(type)
     // { '梁山': 0, '拜忏': 1, }
     if(punchType == -1) return '打卡类型没找到';
     const date = (new Date()).toLocaleDateString()
     const result = await ctx.service.record.add({userid: user.id, date, type: punchType})
-    return `打卡成功！ ${JSON.stringify(result)}`
+    return `打卡成功`
   }
 }
 module.exports = new Events()

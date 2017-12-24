@@ -17,5 +17,6 @@ CREATE TABLE `record` (
   `type` int(1) DEFAULT NULL COMMENT '打卡类型',
   `date` varchar(13) NOT NULL DEFAULT '' COMMENT '要打卡的时间',
   `createTime` varchar(13) NOT NULL DEFAULT '' COMMENT '记录创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_punch_date` (`userid`,`type`,`date`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
