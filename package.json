@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "co-wechat": "^2.3.0",
+    "co-wechat-api": "^3.3.2",
     "egg": "^2.0.0",
     "egg-mysql": "^3.0.0",
     "egg-scripts": "^2.1.0",

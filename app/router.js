@@ -11,4 +11,5 @@ module.exports = app => {
   router.get('/user', controller.user.list)
 
   app.all('/wechat', controller.wechat.wechat)
+  router.get('/wechat/menu', controller.wechat.getMenu)
 };
