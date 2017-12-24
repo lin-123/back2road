@@ -4,8 +4,7 @@ const Controller = require('egg').Controller;
 
 class NewsController extends Controller {
   async list() {
-    const {page} = this.ctx.query
-    await this.ctx.render('news/list.tpl', await this.ctx.service.news.list(page || 1));
+    await this.ctx.render('news/list.tpl', {msg: 'ms1g'});
   }
 }
 
