@@ -16,8 +16,8 @@ class Record extends Controller {
     const userIds = recordInfo.map(item=>item.userid)
     const userInfo = await this.ctx.service.user.listByIds({ids: userIds})
     const result = recordInfo.map(({userid, count}) => {
-      const {name} = userInfo.find(user => user.id == userid)
-      return {name, count}
+      const {name, openid} = userInfo.find(user => user.id == userid)
+      return {name, count, openid}
     })
     this.ctx.body = result
   }
