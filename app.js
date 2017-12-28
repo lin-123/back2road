@@ -1,5 +1,6 @@
+'use strict'
 // app上的配置
 module.exports = app => {
   // 在中间件最前面统计请求时间
-  app.config.coreMiddleware.unshift('report')
+  app.config.coreMiddleware.unshift('report');
 };

@@ -20,4 +20,4 @@ module.exports = {
   jsonp(err, ctx) {
     // 一般来说，不需要特殊针对 jsonp 进行错误定义，jsonp 的错误处理会自动调用 json 错误处理，并包装成 jsonp 的响应格式
   },
-}
+};

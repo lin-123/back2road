@@ -7,8 +7,8 @@ module.exports = {
         #注册# 归了班 卡卡
     `,
   // 顺序不能变
-  punchTypeEnum: ['梁山', '拜忏'],
-  classesEnum: ['归了班'],
-  recordUrl: 'http://www.linkaka.cn/back2road/?'
+  punchTypeEnum: [ '梁山', '拜忏' ],
+  classesEnum: [ '归了班' ],
+  recordUrl: 'http://www.linkaka.cn/back2road/?',
 
-}
+};
