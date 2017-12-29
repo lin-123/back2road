@@ -2,13 +2,21 @@
 
 const Controller = require('egg').Controller;
 
+// GET	/posts	posts	app.controllers.posts.index
+// GET	/posts/new	new_post	app.controllers.posts.new
+// GET	/posts/:id	post	app.controllers.posts.show
+// GET	/posts/:id/edit	edit_post	app.controllers.posts.edit
+// POST	/posts	posts	app.controllers.posts.create
+// PUT	/posts/:id	post	app.controllers.posts.update
+// DELETE	/posts/:id	post	app.controllers.posts.destroy
+
 class User extends Controller {
-  async list() {
+  async index() {
     const { pageSize, pageNo } = this.ctx.query;
     this.ctx.body = await this.ctx.service.user.list({ pageSize, pageNo });
   }
 
-  async register() {
+  async create() {
     const pkg = this.ctx.request.body
     this.ctx.body = await this.ctx.service.user.add(pkg)
   }
@@ -16,4 +24,3 @@ class User extends Controller {
 }
 
 module.exports = User;
-

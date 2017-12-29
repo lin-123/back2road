@@ -15,7 +15,6 @@ module.exports = app => {
   // }
   WechatController.prototype.wechat = app.wechat(async (message, ctx) => {
     const reply = content => ({ content, type: 'text' });
-
     const { Content, MsgType, FromUserName: openid } = message;
     if (MsgType == 'text') {
       try {
