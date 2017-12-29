@@ -7,6 +7,13 @@ class User extends Controller {
     const { pageSize, pageNo } = this.ctx.query;
     this.ctx.body = await this.ctx.service.user.list({ pageSize, pageNo });
   }
+
+  async register() {
+    const pkg = this.ctx.request.body
+    this.ctx.body = await this.ctx.service.user.add(pkg)
+  }
+
 }
 
 module.exports = User;
+

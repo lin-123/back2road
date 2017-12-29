@@ -3,8 +3,12 @@ const Service = require('egg').Service;
 
 class UserService extends Service {
   async add({openid, name, classes}) {
+    if(this.app.config.resource.classesEnum.indexOf(classes) === -1)
+      throw {errmsg: '这个班级不存在，请联系公众号管理人员'}
+
     const user = await this.get({openid})
     if(user) throw {errmsg: '您已经注册了'}
+
     const {affectedRows} = await this.app.mysql.insert('user', {
       openid,
       name,

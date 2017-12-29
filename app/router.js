@@ -9,6 +9,7 @@ module.exports = app => {
   router.get('/news', controller.news.list);
 
   router.get('/user', controller.user.list)
+  router.post('/register', controller.user.register)
 
   app.all('/wechat', controller.wechat.wechat)
   router.get('/wechat/menu', controller.wechat.getMenu)
