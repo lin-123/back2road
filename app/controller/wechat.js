@@ -22,7 +22,7 @@ module.exports = app => {
         const msg = await wechatEvent.map(message, ctx);
         return reply(msg);
       } catch (e) {
-        if (e.errmsg) return e.errmsg;
+        if (e.status) return e.message;
         throw e;
       }
     }
