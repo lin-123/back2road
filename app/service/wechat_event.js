@@ -2,66 +2,42 @@ const qs = require('querystring')
 
 class Events {
   async map({Content, FromUserName}, ctx) {
-    const [, event] = Content.trim().match(/#(\S+)#/) || []
-    const str = Content.split(`#${event}#`)[1]
-    const method = {
-      '注册': 'register',
-      '打卡': 'punch'
-    }[event]
-
-    try {
-      return await this[method || 'autoReply'](str, FromUserName, ctx)
-    } catch(e) {
-      if(e.message !== 'toRegister') throw e;
-      return ctx.app.config.resource.registerMsg
+    if(true || Content.trim() == '打卡') {
+      const openid = FromUserName
+      const user = await ctx.service.user.get({openid})
+      if(!user) return this.register(openid, ctx);
+      return this.punch(user, ctx)
     }
   }
 
-  async getUser(openid, ctx) {
-    const user = await ctx.service.user.get({openid})
-    if(!user) ctx.throw(401, 'toRegister')
-    return user
+  register(openid, ctx) {
+    const str = ctx.app.config.resource.registerMsg
+    const params = { openid,  route: 'register' }
+    return this.replaceA( str, params, ctx)
   }
 
-  async autoReply(str, openid, ctx) {
-    const user = await this.getUser(openid, ctx)
-    const {punchTypeEnum, recordUrl} = ctx.app.config.resource
-    const records = await Promise.all(punchTypeEnum.map( async (typeName, type) => {
-      const days = await ctx.service.record.count({userid: user.id, type})
-      const href = recordUrl + qs.stringify({type, openid})
-      const link = `<a href='${href}'>${typeName}</a>`
-      return `${type}. ${link} ${days}天`
-    }))
-    const msgs = records.concat([,
-      `打卡请回复: #打卡# 序号/名称`,
-      `如打卡“梁山”回复： `,
-      `    #打卡# 0`,
-      `或： `,
-      `    #打卡# 梁山`
-    ])
-
-    return msgs.join('\n')
+  replaceA(str, query, ctx) {
+    const {recordUrl} = ctx.app.config.resource
+    const href = `${recordUrl}?${qs.stringify(query)}`
+    return str.replace(/(.*)\<(.*)\>/, `$1<a href='${href}'>$2</a>`)
   }
 
-  async register(str, openid, ctx) {
-    const [classes, name] = str.match(/(\S+)/g)
-    const {classesEnum} = ctx.app.config.resource
-    if(classesEnum.indexOf[classes] == -1) return '当前不存在这个班级';
-
-    const result = await ctx.service.user.add({openid, name, classes})
-    return result ? '注册成功啦！':'注册失败';
+  replaceValue(str, pkg) {
+    return Object.keys(pkg).reduce((pre, key) =>
+      pre.replace(`{${key}}`, pkg[key])
+    , str)
   }
 
-  async punch(str, openid, ctx) {
-    const user = await this.getUser(openid, ctx)
-    const {punchTypeEnum} = ctx.app.config.resource
-    const [type] = str.match(/(\S+)/g)
-    const punchType = punchTypeEnum[type] ? type : punchTypeEnum.indexOf(type)
-    // { '梁山': 0, '拜忏': 1, }
-    if(punchType == -1) return '打卡类型没找到';
-    const date = (new Date()).toLocaleDateString()
-    const result = await ctx.service.record.add({userid: user.id, date, type: punchType})
-    return `打卡成功`
+  async punch({openid, name, id}, ctx) {
+    const {punchTypeEnum, punchRecordMsg, recordUrl} = ctx.app.config.resource
+    const title = this.replaceValue(punchRecordMsg.title, {name})
+    const records = await ctx.service.record.countType({userid: id})
+    const content = records.map(({count, type}, idx) => {
+      const str = `  ${idx+1}. ` + this.replaceA(punchRecordMsg.repeat, {openid, type}, ctx)
+      return this.replaceValue(str, {typeName: punchTypeEnum[type], count})
+    })
+
+    return [title, ''].concat(content).join('\n')
   }
 }
 module.exports = new Events()

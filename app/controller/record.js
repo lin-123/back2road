@@ -21,6 +21,18 @@ class Record extends Controller {
     })
     this.ctx.body = result
   }
+
+  async create() {
+    const {ctx} = this
+    const {openid, date, type} = ctx.request.body
+    const user = await ctx.service.user.get({openid})
+    const {punchTypeEnum} = ctx.app.config.resource
+    const punchType = punchTypeEnum[type]
+    // punchTypeEnum: [ '梁山', '拜忏' ]
+    if(!punchType) ctx.throw(400, 'invalid type');
+    if(!/\d{4}[0-12]{2}[0-31]{2}/.test(date)) ctx.throw(400, 'invalid date');
+    ctx.body = await ctx.service.record.add({userid: user.id, date, type})
+  }
 }
 
 module.exports = Record;

@@ -7,33 +7,31 @@ class Record extends Service {
     if(result) this.ctx.throw(400, `${date}日已经打过卡了`);
 
     cacheGroupby[type] = ``
-    return await this.app.mysql.insert('record', {
+    const {affectedRows} = await this.app.mysql.insert('record', {
       userid,
       type,
       date, // 打卡日期， 可以补打卡
       createTime: Date.now()
     })
+    return affectedRows == 1
   }
 
-  async count({userid, type}) {
-    return await this.app.mysql.count('record', {
-      type,
-      userid
-    })
+  async countType({userid}) {
+    return await this.service.dbutils.groupby(`
+      SELECT count(*) as count, type
+      FROM record
+      where userid=?
+      group by type
+    `, [userid])
   }
 
   async groupby({type}) {
-    if(cacheGroupby[type]) return cacheGroupby[type];
-    const countSql = `
+    return await this.service.dbutils.groupby(`
       SELECT count(*) as count, userid
       FROM record
       where type=?
       group by userid
-    `
-    const result = await this.app.mysql.query(countSql, type);
-
-    cacheGroupby[type] = result
-    return result
+    `, [type])
   }
 
   async list({openid, type, pageNo=0, pageSize=20}) {
@@ -46,11 +44,6 @@ class Record extends Service {
       offset: pageNo
     });
   }
-
-  // async delete({id}) {
-  //   const result = await this.app.mysql.delete('record', {id})
-  //   return result.affectedRows
-  // }
 }
 
 module.exports = Record;
