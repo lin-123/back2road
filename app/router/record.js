@@ -3,7 +3,10 @@
 /**
  * @param {Egg.Application} app - egg application
  */
-module.exports = ({router, controller}) => {
-  router.resources('/record', controller.record)
+module.exports = ({router, controller, middlewares}) => {
+  const openid2user = middlewares.openid2user();
+  router.resources('/record', openid2user, controller.record)
   router.get('/record/all', controller.record.groupbyList)
+
+  router.get('/record/user', openid2user, controller.record.listMonth)
 };

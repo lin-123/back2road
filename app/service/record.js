@@ -1,23 +1,47 @@
 const Service = require('egg').Service;
 
-let cacheGroupby = {}
+class Cache {
+  constructor() {
+    this.store = {}
+  }
+  get(key) { return this.store[key] }
+  set(key, value) { return this.store[key] = value}
+  clear(like) {
+    Object.keys(this.store).forEach(key => {
+      if(key.indexOf(like) > -1) delete(this.store[key]);
+    })
+  }
+}
+const cache = new Cache()
+
 class Record extends Service {
   async add({userid, type, date}) {
     const result = await this.app.mysql.get('record', {userid, type, date})
     if(result) this.ctx.throw(400, `${date}日已经打过卡了`);
 
-    cacheGroupby[type] = ``
+    cache.clear(`userid=${userid}`)
+    cache.clear(`groupbytype-type=${type}`)
+
     const {affectedRows} = await this.app.mysql.insert('record', {
-      userid,
-      type,
-      date, // 打卡日期， 可以补打卡
+      userid, type, date, // 打卡日期， 可以补打卡
       createTime: Date.now()
     })
     return affectedRows == 1
   }
+  async cacheQuery(cachekey, sql, args = []) {
+    const cacheVal = cache.get(cachekey)
+    if(cacheVal){
+      console.log('from cache', cachekey)
+      return cacheVal
+    }
 
+    const result = await this.service.dbutils.query(sql, args)
+    return cache.set(cachekey, result)
+  }
+
+  // 某个人各个分类的数量
   async countType({userid}) {
-    return await this.service.dbutils.groupby(`
+    return await this.cacheQuery(`countType-user=${userid}`, `
       SELECT count(*) as count, type
       FROM record
       where userid=?
@@ -25,8 +49,9 @@ class Record extends Service {
     `, [userid])
   }
 
+  // 所有人的某个分类汇总
   async groupby({type}) {
-    return await this.service.dbutils.groupby(`
+    return await this.cacheQuery(`groupbytype-type=${type}`, `
       SELECT count(*) as count, userid
       FROM record
       where type=?
@@ -34,15 +59,17 @@ class Record extends Service {
     `, [type])
   }
 
-  async list({openid, type, pageNo=0, pageSize=20}) {
-    return await this.app.mysql.select('record',{
-      where: {
-        // userid: id
-      },
-      // orders: [['created_at','desc'], ['id','desc']],
-      limit: pageSize,
-      offset: pageNo
-    });
+  /**
+   * @param {string} date YYYYMM
+   */
+  async listMonth({userid, type, date}) {
+    return await this.cacheQuery(`mylistmonth-userid=${userid}`, `
+      SELECT id, date, createTime from record
+      WHERE userid=?
+        AND type=?
+        AND date like '${date}%'
+      ORDER BY date asc
+    `, [userid, type])
   }
 }
 

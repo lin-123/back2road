@@ -2,11 +2,14 @@ const Service = require('egg').Service;
 
 let cacheGroupby = {}
 class DButils extends Service {
-  async groupby(sql, args) {
-    const cachekey = sql+args.join('-')
-    if(cacheGroupby[cachekey]) return cacheGroupby[cachekey];
+  clearCache(like){
+    Object.keys(cacheGroupby).forEach(key => {
+      if(key.indexOf(like) > -1) delete(cacheGroupby[key]);
+    })
+  }
+
+  async query(sql, args) {
     const result = await this.app.mysql.query(sql, args);
-    cacheGroupby[cachekey] = result
     return result
   }
 }
