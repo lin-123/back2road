@@ -4,7 +4,7 @@ let cacheGroupby = {}
 class Record extends Service {
   async add({userid, type, date}) {
     const result = await this.app.mysql.get('record', {userid, type, date})
-    if(result) throw {errmsg: `${date}日已经打过卡了`};
+    if(result) this.ctx.throw(400, `${date}日已经打过卡了`);
 
     cacheGroupby[type] = ``
     return await this.app.mysql.insert('record', {

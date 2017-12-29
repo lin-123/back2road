@@ -12,14 +12,14 @@ class Events {
     try {
       return await this[method || 'autoReply'](str, FromUserName, ctx)
     } catch(e) {
-      if(e !== 'toRegister') throw e;
+      if(e.message !== 'toRegister') throw e;
       return ctx.app.config.resource.registerMsg
     }
   }
 
   async getUser(openid, ctx) {
     const user = await ctx.service.user.get({openid})
-    if(!user) throw 'toRegister';
+    if(!user) ctx.throw(401, 'toRegister')
     return user
   }
 
