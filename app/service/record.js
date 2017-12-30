@@ -29,14 +29,13 @@ class Record extends Service {
     return affectedRows == 1
   }
   async cacheQuery(cachekey, sql, args = []) {
-    const cacheVal = cache.get(cachekey)
+    const cacheVal = cache.get(cachekey+sql)
     if(cacheVal){
-      console.log('from cache', cachekey)
       return cacheVal
     }
 
     const result = await this.service.dbutils.query(sql, args)
-    return cache.set(cachekey, result)
+    return cache.set(cachekey+sql, result)
   }
 
   // 某个人各个分类的数量
@@ -68,6 +67,19 @@ class Record extends Service {
       WHERE userid=?
         AND type=?
         AND date like '${date}%'
+      ORDER BY date asc
+    `, [userid, type])
+  }
+
+  async listByUserid({userid, type, start, end}) {
+    if(!end) end = this.service.time.formatNow('YYYYMMDD');
+    console.log(start, end, '-------')
+    return await this.cacheQuery(`listByUserid-userid=${userid}-type=${type}`, `
+      SELECT id, date, createTime from record
+      WHERE userid=?
+        AND type=?
+        AND date >= ${start}
+        AND date <= ${end}
       ORDER BY date asc
     `, [userid, type])
   }

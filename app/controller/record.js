@@ -3,9 +3,13 @@ const merge = require('object-assign');
 const Controller = require('egg').Controller;
 
 class Record extends Controller {
-  async list() {
-    const {pageSize, pageNo, type, openid} = this.ctx.query
-    this.ctx.body = await this.ctx.service.record.list({pageSize, pageNo})
+  async index() {
+    const {user} = this.ctx.middlewareData
+    const {start, end, type} = this.ctx.query
+    if(!start) this.ctx.throw(400, 'invali start date');
+    this.ctx.body = await this.ctx.service.record.listByUserid({
+      start, end, type, userid: user.id
+    })
   }
 
   // 按月查询我的打卡记录
