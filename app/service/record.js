@@ -28,14 +28,15 @@ class Record extends Service {
     })
     return affectedRows == 1
   }
-  async cacheQuery(cachekey, sql, args = []) {
-    const cacheVal = cache.get(cachekey+sql)
+  async cacheQuery(prefix, sql, args = []) {
+    const cachekey = prefix + sql + args.join('-')
+    const cacheVal = cache.get(cachekey)
     if(cacheVal){
       return cacheVal
     }
 
     const result = await this.service.dbutils.query(sql, args)
-    return cache.set(cachekey+sql, result)
+    return cache.set(cachekey, result)
   }
 
   // 某个人各个分类的数量
@@ -49,11 +50,12 @@ class Record extends Service {
   }
 
   // 所有人的某个分类汇总
-  async groupby({type}) {
+  async groupby({type, date}) {
     return await this.cacheQuery(`groupbytype-type=${type}`, `
       SELECT count(*) as count, userid
       FROM record
-      where type=?
+      WHERE type=?
+        AND date like '${date}%'
       group by userid
     `, [type])
   }
@@ -73,7 +75,6 @@ class Record extends Service {
 
   async listByUserid({userid, type, start, end}) {
     if(!end) end = this.service.time.formatNow('YYYYMMDD');
-    console.log(start, end, '-------')
     return await this.cacheQuery(`listByUserid-userid=${userid}-type=${type}`, `
       SELECT id, date, createTime from record
       WHERE userid=?

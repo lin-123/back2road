@@ -2,6 +2,7 @@
 const merge = require('object-assign');
 const Controller = require('egg').Controller;
 
+const checkMonth = (date, ctx) => /\d{4}[0-12]{2}/.test(date) ? true : ctx.throw(400, 'invalid date');
 class Record extends Controller {
   async index() {
     const {user} = this.ctx.middlewareData
@@ -17,7 +18,7 @@ class Record extends Controller {
     const {ctx} = this
     const {user} = ctx.middlewareData
     const {date, type} = ctx.query
-    if(!/\d{4}[0-12]{2}/.test(date)) ctx.throw(400, 'invalid date');
+    checkMonth(date, ctx)
     const result = await ctx.service.record.listMonth({userid: user.id, type, date})
 
     ctx.body = result
@@ -25,9 +26,14 @@ class Record extends Controller {
 
   // 获取某个分类的所有人统计记录
   async groupbyList() {
-    const {type} = this.ctx.query
+    const {type, date} = this.ctx.query
     if(!type) return this.ctx.body = 'invalid type'
-    const recordInfo = await this.ctx.service.record.groupby({type})
+    checkMonth(date, this.ctx)
+    const recordInfo = await this.ctx.service.record.groupby({type, date})
+    if(!recordInfo || recordInfo.length === 0) {
+      this.ctx.body = []
+      return;
+    }
     const userIds = recordInfo.map(item=>item.userid)
     const userInfo = await this.ctx.service.user.listByIds({ids: userIds})
     const result = recordInfo.map(({userid, count}) => {
