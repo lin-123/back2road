@@ -1,11 +1,7 @@
 # guiliao-server
 
 ## todo
-- 做一个网页出来，显示此类打卡记录， 添加一个打卡按钮即可
-- restfule api
-
-step2：
-
+- unit test!!!
 - feedback -- 消息回复里面的用户反馈
 - 自定义菜单 -- 暂时做不了，需要认证微信公众号
 - 自动回复消息的再次自动回复
@@ -14,8 +10,7 @@ step2：
 ## done
 - error 处理
 - groupby 加缓存
-
-
+- restfule api
 1. 可以注册
 2. 可以打卡
 3. 新人报道：[班级] [姓名] 正则表达式匹配
