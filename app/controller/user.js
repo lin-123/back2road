@@ -17,8 +17,14 @@ class User extends Controller {
   }
 
   async create() {
-    const pkg = this.ctx.request.body
-    this.ctx.body = await this.ctx.service.user.add(pkg)
+    const pkg = this.ctx.request.body;
+    this.ctx.body = await this.ctx.service.user.add(pkg);
+  }
+
+  async show() {
+    const { id } = this.ctx.params;
+    const user = await this.ctx.service.user.get({ openid: id });
+    this.ctx.body = user;
   }
 
 }
