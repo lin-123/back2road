@@ -41,7 +41,7 @@ class Record extends Service {
 
   // 某个人各个分类的数量
   async countType({userid}) {
-    return await this.cacheQuery(`countType-user=${userid}`, `
+    return await this.cacheQuery(`countType-userid=${userid}`, `
       SELECT count(*) as count, type
       FROM record
       where userid=?
