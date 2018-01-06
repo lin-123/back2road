@@ -1,3 +1,4 @@
+'use strict';
 const reportTime = timestemp => {
   console.log('request timeing: ', timestemp);
 };
