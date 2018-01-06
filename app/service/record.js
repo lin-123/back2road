@@ -62,21 +62,6 @@ class Record extends Service {
     `, [ type ]);
   }
 
-  /**
-   * list month
-   * @param {string} date YYYYMM
-   * @return {array} this user's list of date month
-   */
-  async listMonth({ userid, type, date }) {
-    return await this.cacheQuery(`mylistmonth-userid=${userid}`, `
-      SELECT id, date, createTime from record
-      WHERE userid=?
-        AND type=?
-        AND date like '${date}%'
-      ORDER BY date asc
-    `, [ userid, type ]);
-  }
-
   async listByUserid({ userid, type, start, end }) {
     return await this.cacheQuery(`listByUserid-userid=${userid}-type=${type}`, `
       SELECT id, date, createTime from record

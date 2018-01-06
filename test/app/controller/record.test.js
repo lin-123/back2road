@@ -28,7 +28,7 @@ describe('test/controller/error.test.js', () => {
         });
 
       return app.httpRequest()
-        .get(`/record/user/${start}/${end}/${type}`)
+        .get(`/record/user/${type}/${start}/${end}`)
         .query({ openid: user.openid })
         .expect(200) // 期望返回 status 200
         .expect([]);
@@ -36,7 +36,7 @@ describe('test/controller/error.test.js', () => {
 
     it('error, invalid start date', () => {
       return app.httpRequest()
-        .get('/record/user/start/end/0')
+        .get('/record/user/0/start/end')
         .query({ openid: user.openid })
         .expect(422);
     });
