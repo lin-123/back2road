@@ -29,6 +29,7 @@ class Record extends Service {
     });
     return affectedRows === 1;
   }
+
   async cacheQuery(prefix, sql, args = []) {
     const cachekey = prefix + sql + args.join('-');
     const cacheVal = cache.get(cachekey);
@@ -77,7 +78,6 @@ class Record extends Service {
   }
 
   async listByUserid({ userid, type, start, end }) {
-    if (!end) end = this.service.time.formatNow('YYYYMMDD');
     return await this.cacheQuery(`listByUserid-userid=${userid}-type=${type}`, `
       SELECT id, date, createTime from record
       WHERE userid=?

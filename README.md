@@ -2,6 +2,7 @@
 
 ## todo
 
+- timeformat move to helper
 - unit test!!!
   1. sinon.useFakeTimers 单独引入
 - feedback -- 消息回复里面的用户反馈

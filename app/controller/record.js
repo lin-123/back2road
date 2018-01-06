@@ -1,23 +1,22 @@
 'use strict';
+const merge = require('object-assign');
 const Controller = require('egg').Controller;
 
 const checkMonth = (date, ctx) => (/\d{4}[0-12]{2}/.test(date) ? true : ctx.throw(400, 'invalid date'));
 class Record extends Controller {
-  async index() {
-    const { user } = this.ctx.middlewareData;
-    const { start, end, type } = this.ctx.query;
-    if (!start) this.ctx.throw(400, 'invali start date');
-    this.ctx.body = await this.ctx.service.record.listByUserid({ start, end, type, userid: user.id });
-  }
-
-  // 按月查询我的打卡记录
-  async listMonth() {
-    const { ctx } = this;
-    const { user } = ctx.middlewareData;
-    const { date, type } = ctx.query;
-    checkMonth(date, ctx);
-    const result = await ctx.service.record.listMonth({ userid: user.id, type, date });
-    ctx.body = result;
+  /**
+   * get user record list
+   * @param {number} start start date
+   * @param {number} end end date
+   * @param {number} type punch type
+   */
+  async user() {
+    const { middlewareData, params, service } = this.ctx;
+    const { user } = middlewareData;
+    const { punchTypeEnum } = this.config.resource;
+    this.ctx.argCheck({ start: 'YYYYMMDD', end: 'YYYYMMDD', type: Object.keys(punchTypeEnum) }, params);
+    console.log('sadf');
+    this.ctx.body = await service.record.listByUserid(merge(params, { userid: user.id }));
   }
 
   // 获取某个分类的所有人统计记录
@@ -46,7 +45,7 @@ class Record extends Controller {
     const { ctx } = this;
     const { user } = ctx.middlewareData;
     const { date, type } = ctx.request.body;
-    const { punchTypeEnum } = ctx.app.config.resource;
+    const { punchTypeEnum } = ctx.config.resource;
     const punchType = punchTypeEnum[type];
     // punchTypeEnum: [ '梁山', '拜忏' ]
     if (!punchType) ctx.throw(400, 'invalid type');

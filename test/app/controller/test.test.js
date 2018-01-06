@@ -1,5 +1,5 @@
 'use strict';
-const { app } = require('egg-mock/bootstrap');
+const { app, mock } = require('egg-mock/bootstrap');
 
 describe('test/controller/error.test.js', () => {
   describe('GET /', () => {
@@ -24,6 +24,16 @@ describe('test/controller/error.test.js', () => {
         .expect({
           foo: 'bar',
         });
+    });
+  });
+  describe('timer ', () => {
+    it('mock timer', () => {
+      mock(global, 'setTimeout', () => {
+        console.log('call settimeout');
+      });
+      setTimeout(() => {
+        console.log('asdf');
+      }, 100);
     });
   });
 });
