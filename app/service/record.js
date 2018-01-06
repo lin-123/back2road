@@ -32,10 +32,10 @@ class Record extends Service {
 
   async cacheQuery(prefix, sql, args = []) {
     const cachekey = prefix + sql + args.join('-');
-    // const cacheVal = cache.get(cachekey);
-    // if (cacheVal) {
-    //   return cacheVal;
-    // }
+    const cacheVal = cache.get(cachekey);
+    if (cacheVal) {
+      return cacheVal;
+    }
 
     const result = await this.service.dbutils.query(sql, args);
     return cache.set(cachekey, result);
