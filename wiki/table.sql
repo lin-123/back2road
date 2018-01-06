@@ -13,7 +13,7 @@ CREATE TABLE `user` (
 DROP table record;
 CREATE TABLE `record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userid` varchar(32) NOT NULL DEFAULT '' COMMENT 'userid',
+  `userid` int(11) NOT NULL DEFAULT '' COMMENT 'userid',
   `type` int(1) DEFAULT NULL COMMENT '打卡类型',
   `date` varchar(8) NOT NULL DEFAULT '' COMMENT '要打卡的时间',
   `createTime` varchar(13) NOT NULL DEFAULT '' COMMENT '记录创建时间',

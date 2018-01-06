@@ -6,7 +6,7 @@ class Cache {
     this.store = {};
   }
   get(key) { return this.store[ key ]; }
-  set(key, value) { this.store[ key ] = value; }
+  set(key, value) { this.store[ key ] = value; return value; }
   clear(like) {
     Object.keys(this.store).forEach(key => {
       key.indexOf(like) > -1 && delete this.store[ key ];
@@ -32,10 +32,10 @@ class Record extends Service {
 
   async cacheQuery(prefix, sql, args = []) {
     const cachekey = prefix + sql + args.join('-');
-    const cacheVal = cache.get(cachekey);
-    if (cacheVal) {
-      return cacheVal;
-    }
+    // const cacheVal = cache.get(cachekey);
+    // if (cacheVal) {
+    //   return cacheVal;
+    // }
 
     const result = await this.service.dbutils.query(sql, args);
     return cache.set(cachekey, result);
