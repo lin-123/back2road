@@ -26,5 +26,5 @@ DROP TABL `cache`;
 CREATE TABLE `cache` (
   `key` varchar(256) NOT NULL COMMENT 'query key',
   `value` varchar(512) NULL COMMENT 'query value'
-  PRIMARY KEY (`key`),
+  PRIMARY KEY (`key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
