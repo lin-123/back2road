@@ -7,6 +7,7 @@ module.exports = app => {
   require('./router/record')(app);
   require('./router/user')(app);
   require('./router/wechat')(app);
+  require('./router/test')(app);
 };
 
 // restful api
