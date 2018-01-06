@@ -1,5 +1,5 @@
 'use strict';
-const wechat = require('co-wechat');
+// const wechat = require('co-wechat');
 const wechatEvent = require('../service/wechat_event');
 // 因为 Egg 需要用类的形式来组织，而 wechat 是通过 middleware 方法来生成中间件
 module.exports = app => {
@@ -15,8 +15,8 @@ module.exports = app => {
   // }
   WechatController.prototype.wechat = app.wechat(async (message, ctx) => {
     const reply = content => ({ content, type: 'text' });
-    const { Content, MsgType, FromUserName: openid } = message;
-    if (MsgType == 'text') {
+    const { MsgType } = message;
+    if (MsgType === 'text') {
       try {
         const msg = await wechatEvent.map(message, ctx);
         return reply(msg);

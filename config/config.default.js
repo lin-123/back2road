@@ -39,9 +39,10 @@ const config = {
 };
 
 const getEnvConfig = (prefix, keys) =>
-  keys.reduce((pre, key) =>
-    (pre[key] = process.env[`${prefix}_${key}`], pre)
-    , {});
+  keys.reduce((pre, key) => {
+    pre[key] = process.env[`${prefix}_${key}`];
+    return pre;
+  }, {});
 
 const wechat = getEnvConfig('wechat', [ 'appid', 'secret', 'token', 'encodingAESKey' ]);
 const dbConf = getEnvConfig('db', [ 'host', 'port', 'user', 'password', 'database' ]);

@@ -1,3 +1,4 @@
+'use strict';
 
 // 这个是针对异常的处理过程， 【真异常】
 module.exports = {
@@ -21,4 +22,4 @@ module.exports = {
   // jsonp(err, ctx) {
   //   // 一般来说，不需要特殊针对jsonp 进行错误定义，jsonp 的错误处理会自动调用 json 错误处理，并包装成 jsonp 的响应格式
   // },
-}
+};

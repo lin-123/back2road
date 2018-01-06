@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 // app上的配置
 module.exports = app => {
   // 在中间件最前面统计请求时间
