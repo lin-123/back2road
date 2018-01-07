@@ -4,7 +4,12 @@
 
 - timeformat move to helper
 - unit test!!!
-  1. sinon.useFakeTimers 单独引入
+  1. [x] sinon.useFakeTimers 单独引入
+  1. [x] record controller&service unitest
+  1. [ ] cache service unitest
+  1. [ ] user controller&service unittest
+  1. [ ] wechat controller&service unitest
+
 - feedback -- 消息回复里面的用户反馈
 - 自定义菜单 -- 暂时做不了，需要认证微信公众号
 - 自动回复消息的再次自动回复
