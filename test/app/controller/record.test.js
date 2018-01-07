@@ -66,6 +66,12 @@ describe('test/controller/error.test.js', () => {
           openid: user.openid,
         }]);
     });
+
+    it('error, should return 40X', () => {
+      getRequest('/record/group/0', 404);
+      getRequest('/record/group/0/20170101/1', 404);
+      return getRequest('/record/group/0/null', 422);
+    });
   });
 
   describe('post /record', () => {
