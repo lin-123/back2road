@@ -4,10 +4,13 @@ const qs = require('querystring');
 
 class Events {
   async map({ Content, FromUserName }, ctx) {
-    if (Content.trim() === '打卡') {
-      const userRecords = await this.getUserRecord(FromUserName, ctx);
-      return this.reply(FromUserName, userRecords, ctx);
-    }
+    const userRecords = await this.getUserRecord(FromUserName, ctx);
+    return this.reply(FromUserName, userRecords, ctx);
+
+    // if (Content.trim() === '打卡') {
+    //   const userRecords = await this.getUserRecord(FromUserName, ctx);
+    //   return this.reply(FromUserName, userRecords, ctx);
+    // }
   }
 
   async getUserRecord(openid, ctx) {
