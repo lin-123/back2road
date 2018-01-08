@@ -9,7 +9,7 @@ describe('test/controller/error.test.js', () => {
       date: '20170101',
     };
     it('normal', async () => {
-      const timer = new global.FakeTimer('2017-01-01');
+      const timer = new global.utils.FakeTimer('2017-01-01');
       mock(app.mysql, 'get', (table, args) => {
         assert(table === 'record');
         assert.deepEqual(args, record);

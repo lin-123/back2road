@@ -13,5 +13,7 @@ class FakeTimer {
   }
 }
 
-global.FakeTimer = FakeTimer;
-
+global.utils = {
+  FakeTimer,
+  trim: str => str && str.trim().replace(/\s+/g, ' '),
+};

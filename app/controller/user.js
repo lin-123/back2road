@@ -27,6 +27,10 @@ class User extends Controller {
     this.ctx.body = user;
   }
 
+  async destroy() {
+    return await this.ctx.service.cache.clear({ userid: 1 });
+  }
+
 }
 
 module.exports = User;
