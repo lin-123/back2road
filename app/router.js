@@ -4,12 +4,19 @@
  * @param {Egg.Application} app - egg application
  */
 module.exports = app => {
-  const { router, controller, config } = app;
-  router.get('/', controller.home.index);
-  router.get('/news', controller.news.list);
-
-  router.get('/user', controller.user.list)
-
-  app.all('/wechat', controller.wechat.wechat)
-  router.get('/wechat/menu', controller.wechat.getMenu)
+  require('./router/record')(app);
+  require('./router/user')(app);
+  require('./router/wechat')(app);
+  require('./router/test')(app);
 };
+
+// restful api
+// Method	Path	Route Name	Controller.Action
+// GET	/posts	posts	app.controllers.posts.index
+// GET	/posts/new	new_post	app.controllers.posts.new
+// GET	/posts/:id	post	app.controllers.posts.show
+// GET	/posts/:id/edit	edit_post	app.controllers.posts.edit
+// POST	/posts	posts	app.controllers.posts.create
+// PUT	/posts/:id	post	app.controllers.posts.update
+// DELETE	/posts/:id	post	app.controllers.posts.destroy
+
