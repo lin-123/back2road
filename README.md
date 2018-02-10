@@ -2,6 +2,7 @@
 
 ## todo
 
+- fix cache
 - timeformat move to helper
 - unit test!!!
   1. [x] sinon.useFakeTimers 单独引入
@@ -14,6 +15,7 @@
 - 自定义菜单 -- 暂时做不了，需要认证微信公众号
 - 自动回复消息的再次自动回复
 - PostgreSQL ——》 用这个数据库吧
+
 
 ## done
 
