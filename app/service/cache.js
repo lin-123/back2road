@@ -1,8 +1,6 @@
 'use strict';
 const Service = require('egg').Service;
 
-// const store = {};
-
 class Cache extends Service {
   getKey(sql, argsObj) {
     if (!argsObj) return sql;
@@ -11,7 +9,11 @@ class Cache extends Service {
   async get(key) {
     const result = await this.app.mysql.get('cache', { key });
     if (!result) return;
-    return JSON.parse(result.value);
+    try {
+      return JSON.parse(result.value);
+    } catch (e) {
+      this.ctx.logger.error('get cache result json parse error: ', e, 'result=', result);
+    }
 
   }
   async set(key, value) {
@@ -33,14 +35,14 @@ class Cache extends Service {
    *
    */
   async cacheQuery(sql, args) {
-    const cachekey = this.getKey(sql, args);
-    const cacheVal = await this.get(cachekey);
-    if (cacheVal) {
-      return cacheVal;
-    }
+    // const cachekey = this.getKey(sql, args);
+    // const cacheVal = await this.get(cachekey);
+    // if (cacheVal) {
+    //   return cacheVal;
+    // }
     const argsArr = Object.keys(args).map(key => args[key]);
     const result = await this.service.dbutils.query(sql, argsArr);
-    this.set(cachekey, result);
+    // this.set(cachekey, result);
     return result;
   }
 
